@@ -1,0 +1,28 @@
+name: rpow - step 1 request login
+
+on:
+  workflow_dispatch:
+    inputs:
+      email:
+        description: "Your RPOW account email"
+        required: true
+
+jobs:
+  request-login:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Download rpow-cli.js
+        run: |
+          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-cli.js -o rpow-cli.js
+
+      - name: Request magic link
+        run: |
+          node rpow-cli.js login --email "${{ github.event.inputs.email }}"
+          echo "✅ The magic link has been sent to your email!"
+          echo "📧 Check your email and then proceed to step 2 of the workflow"
