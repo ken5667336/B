@@ -3,14 +3,22 @@ name: rpow miner runner
 on:
   workflow_dispatch:
     inputs:
-      count:
-        description: "Number of tokens to mine"
+      account:
+        description: "Nomor akun (1 atau 2)"
         required: true
         default: "1"
+      count:
+        description: "Jumlah token yang mau di-mine"
+        required: true
+        default: "10"
       workers:
-        description: "Number of CPU workers"
+        description: "Jumlah CPU workers"
         required: true
         default: "2"
+      engine:
+        description: "Engine mining (native atau node)"
+        required: true
+        default: "native"
 
 jobs:
   mine:
@@ -22,7 +30,7 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Download all the necessary files
+      - name: Download semua file yang dibutuhkan
         run: |
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-native-miner -o rpow-native-miner
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-cli.js -o rpow-cli.js
@@ -31,16 +39,27 @@ jobs:
           chmod +x rpow-native-miner
           ls -la
 
-      - name: Restore sesi from secret
+      - name: Restore sesi akun ${{ github.event.inputs.account }}
         run: |
-          echo '${{ secrets.RPOW_STATE }}' > .rpow-cli-state.json
+          cat << 'STATEOF' > .rpow-${{ github.event.inputs.account }}.json
+          ${{ secrets[format('RPOW_STATE_{0}', github.event.inputs.account)] }}
+          STATEOF
 
-      - name: run mining
+      - name: Validasi state file
+        run: |
+          echo "Isi state file:"
+          cat .rpow-${{ github.event.inputs.account }}.json
+          node -e "JSON.parse(require('fs').readFileSync('.rpow-${{ github.event.inputs.account }}.json','utf8'))" && echo "✅ JSON valid" || echo "❌ JSON tidak valid"
+
+      - name: Jalankan mining
         run: |
           node rpow-cli.js mine \
             --count ${{ github.event.inputs.count }} \
             --workers ${{ github.event.inputs.workers }} \
-            --engine native
+            --engine ${{ github.event.inputs.engine }} \
+            --state .rpow-${{ github.event.inputs.account }}.json
 
-      - name: Check your balance after mining
-        run: node rpow-cli.js me
+      - name: Cek saldo setelah mining
+        run: |
+          node rpow-cli.js me \
+            --state .rpow-${{ github.event.inputs.account }}.json
