@@ -1,0 +1,46 @@
+name: rpow miner runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "Number of tokens to mine"
+        required: true
+        default: "1"
+      workers:
+        description: "Number of CPU workers"
+        required: true
+        default: "2"
+
+jobs:
+  mine:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Download all the necessary files
+        run: |
+          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-native-miner -o rpow-native-miner
+          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-cli.js -o rpow-cli.js
+          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-miner-worker.js -o rpow-miner-worker.js
+          curl -L https://github.com/ken5667336/compiler/releases/download/v01/index.js -o index.js
+          chmod +x rpow-native-miner
+          ls -la
+
+      - name: Restore sesi from secret
+        run: |
+          echo '${{ secrets.RPOW_STATE }}' > .rpow-cli-state.json
+
+      - name: run mining
+        run: |
+          node rpow-cli.js mine \
+            --count ${{ github.event.inputs.count }} \
+            --workers ${{ github.event.inputs.workers }} \
+            --engine native
+
+      - name: Check your balance after mining
+        run: node rpow-cli.js me
