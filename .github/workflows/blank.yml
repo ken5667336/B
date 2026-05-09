@@ -17,9 +17,12 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Download rpow-cli.js
+      - name: Download semua file yang dibutuhkan
         run: |
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-cli.js -o rpow-cli.js
+          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-miner-worker.js -o rpow-miner-worker.js
+          curl -L https://github.com/ken5667336/compiler/releases/download/v01/index.js -o index.js
+          ls -la
 
       - name: Request magic link
         run: |
