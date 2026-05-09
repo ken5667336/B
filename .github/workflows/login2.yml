@@ -4,8 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       magic_link:
-        description: "Paste the magic link from your email"
+        description: "Paste magic link dari email kamu"
         required: true
+      account:
+        description: "Nomor akun (1 atau 2)"
+        required: true
+        default: "1"
 
 jobs:
   complete-login:
@@ -17,23 +21,26 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Download all the necessary files
+      - name: Download semua file yang dibutuhkan
         run: |
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-cli.js -o rpow-cli.js
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-miner-worker.js -o rpow-miner-worker.js
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/index.js -o index.js
           ls -la
 
-      - name: Log in using the magic link
+      - name: Complete login dengan magic link
         run: |
-          node rpow-cli.js complete-login --link "${{ github.event.inputs.magic_link }}"
+          node rpow-cli.js complete-login \
+            --link "${{ github.event.inputs.magic_link }}" \
+            --state .rpow-${{ github.event.inputs.account }}.json
 
-      - name: Session verification
+      - name: Verifikasi sesi
         run: |
-          node rpow-cli.js me
+          node rpow-cli.js me \
+            --state .rpow-${{ github.event.inputs.account }}.json
 
-      - name: Display the contents of the state file
+      - name: Tampilkan isi state file
         run: |
-          echo "======= COPY THIS CONTENT TO GITHUB SECRET RPOW_STATE ======="
-          cat .rpow-cli-state.json
+          echo "======= COPY ISI INI KE SECRET RPOW_STATE_${{ github.event.inputs.account }} ======="
+          cat .rpow-${{ github.event.inputs.account }}.json
           echo "=================================================="
