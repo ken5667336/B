@@ -4,8 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       email:
-        description: "Your RPOW account email"
+        description: "Email akun RPOW kamu"
         required: true
+      account:
+        description: "Nomor akun (1 atau 2)"
+        required: true
+        default: "1"
 
 jobs:
   request-login:
@@ -17,7 +21,7 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Download all the necessary files
+      - name: Download semua file yang dibutuhkan
         run: |
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-cli.js -o rpow-cli.js
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-miner-worker.js -o rpow-miner-worker.js
@@ -26,6 +30,9 @@ jobs:
 
       - name: Request magic link
         run: |
-          node rpow-cli.js login --email "${{ github.event.inputs.email }}"
-          echo "✅ The magic link has been sent to your email!"
-          echo "📧 Check your email and then proceed to step 2 of the workflow"
+          node rpow-cli.js login \
+            --email "${{ github.event.inputs.email }}" \
+            --state .rpow-${{ github.event.inputs.account }}.json
+          echo "✅ Magic link dikirim ke email!"
+          echo "📧 Cek email lalu jalankan workflow step 2"
+          echo "📌 Gunakan nomor akun: ${{ github.event.inputs.account }}"
