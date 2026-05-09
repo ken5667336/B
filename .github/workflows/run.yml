@@ -1,0 +1,39 @@
+name: rpow - step 2 complete login
+
+on:
+  workflow_dispatch:
+    inputs:
+      magic_link:
+        description: "Paste magic link dari email kamu"
+        required: true
+
+jobs:
+  complete-login:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Download all the necessary files
+        run: |
+          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-cli.js -o rpow-cli.js
+          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-miner-worker.js -o rpow-miner-worker.js
+          curl -L https://github.com/ken5667336/compiler/releases/download/v01/index.js -o index.js
+          ls -la
+
+      - name: Log in using the magic link
+        run: |
+          node rpow-cli.js complete-login --link "${{ github.event.inputs.magic_link }}"
+
+      - name: Session verification
+        run: |
+          node rpow-cli.js me
+
+      - name: Display the contents of the state file
+        run: |
+          echo "======= COPY THIS CONTENT TO GITHUB SECRET RPOW_STATE ======="
+          cat .rpow-cli-state.json
+          echo "=================================================="
