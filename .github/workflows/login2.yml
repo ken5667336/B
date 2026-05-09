@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       magic_link:
-        description: "Paste magic link dari email kamu"
+        description: "Paste the magic link from your email"
         required: true
 
 jobs:
