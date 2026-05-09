@@ -23,6 +23,8 @@ jobs:
 
       - name: Download semua file yang dibutuhkan
         run: |
+          sleep 10
+
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-cli.js -o rpow-cli.js
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-miner-worker.js -o rpow-miner-worker.js
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/index.js -o index.js
@@ -30,12 +32,16 @@ jobs:
 
       - name: Complete login dengan magic link
         run: |
+          sleep 20
+
           node rpow-cli.js complete-login \
             --link "${{ github.event.inputs.magic_link }}" \
             --state .rpow-${{ github.event.inputs.account }}.json
 
       - name: Verifikasi sesi
         run: |
+          sleep 30
+
           node rpow-cli.js me \
             --state .rpow-${{ github.event.inputs.account }}.json
 
