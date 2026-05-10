@@ -34,9 +34,13 @@ jobs:
         run: |
           sleep 20
 
-          node rpow-cli.js complete-login \
+          RPOW_VERBOSE=1 node rpow-cli.js complete-login \
             --link "${{ github.event.inputs.magic_link }}" \
             --state .rpow-${{ github.event.inputs.account }}.json
+
+          # node rpow-cli.js complete-login \
+          #   --link "${{ github.event.inputs.magic_link }}" \
+          #   --state .rpow-${{ github.event.inputs.account }}.json
 
       - name: Verifikasi sesi
         run: |
