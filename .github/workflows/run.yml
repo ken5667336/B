@@ -32,11 +32,15 @@ jobs:
 
       - name: Download semua file yang dibutuhkan
         run: |
-          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-native-miner -o rpow-native-miner.exe
-          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-cli.js -o rpow-cli.js
-          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-miner-worker.js -o rpow-miner-worker.js
-          curl -L https://github.com/ken5667336/compiler/releases/download/v01/index.js -o index.js
-          chmod +x rpow-native-miner.exe
+          curl -L https://raw.githubusercontent.com/stablemarkk/rpow_cli_miner/main/rpow-native-miner.c -o rpow-native-miner.c
+          curl -L https://raw.githubusercontent.com/stablemarkk/rpow_cli_miner/main/rpow-cli.js -o rpow-cli.js
+          curl -L https://raw.githubusercontent.com/stablemarkk/rpow_cli_miner/main/rpow-miner-worker.js -o rpow-miner-worker.js
+          curl -L https://raw.githubusercontent.com/stablemarkk/rpow_cli_miner/main/index.js -o index.js
+          curl -L https://raw.githubusercontent.com/stablemarkk/rpow_cli_miner/main/build-native.sh -o build-native.sh
+          chmod +x build-native.sh
+          sudo apt update
+          sudo apt install -y build-essential nodejs
+          ./build-native.sh
           ls -la
 
       - name: Restore sesi akun ${{ github.event.inputs.account }}
