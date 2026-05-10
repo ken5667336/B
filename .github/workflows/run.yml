@@ -40,10 +40,10 @@ jobs:
           ls -la
 
       - name: Restore sesi akun ${{ github.event.inputs.account }}
+        env:
+          STATE_JSON: ${{ secrets[format('RPOW_STATE_{0}', github.event.inputs.account)] }}
         run: |
-          cat << 'STATEOF' > .rpow-${{ github.event.inputs.account }}.json
-          ${{ secrets[format('RPOW_STATE_{0}', github.event.inputs.account)] }}
-          STATEOF
+          echo "$STATE_JSON" > .rpow-${{ github.event.inputs.account }}.json
 
       - name: Validasi state file
         run: |
