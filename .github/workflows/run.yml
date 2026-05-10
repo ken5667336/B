@@ -32,11 +32,11 @@ jobs:
 
       - name: Download semua file yang dibutuhkan
         run: |
-          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-native-miner -o rpow-native-miner
+          curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-native-miner -o rpow-native-miner.exe
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-cli.js -o rpow-cli.js
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/rpow-miner-worker.js -o rpow-miner-worker.js
           curl -L https://github.com/ken5667336/compiler/releases/download/v01/index.js -o index.js
-          chmod +x rpow-native-miner
+          chmod +x rpow-native-miner.exe
           ls -la
 
       - name: Restore sesi akun ${{ github.event.inputs.account }}
